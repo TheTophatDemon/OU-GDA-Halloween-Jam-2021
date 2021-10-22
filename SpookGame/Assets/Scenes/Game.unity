@@ -378,6 +378,8 @@ GameObject:
   - component: {fileID: 1221526374}
   - component: {fileID: 1221526373}
   - component: {fileID: 1221526372}
+  - component: {fileID: 1221526377}
+  - component: {fileID: 1221526378}
   m_Layer: 0
   m_Name: Map
   m_TagString: Untagged
@@ -397,8 +399,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a7676c1f9580664cae4ef4361d973df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rows: 32
-  columns: 32
+  rows: 16
+  columns: 16
+  prefabs: []
 --- !u!23 &1221526373
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -470,7 +473,33 @@ Grid:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1221526371}
   m_Enabled: 1
-  m_CellSize: {x: 2, y: 2, z: 2}
+  m_CellSize: {x: 4, y: 4, z: 4}
   m_CellGap: {x: 0, y: 0, z: 0}
   m_CellLayout: 0
   m_CellSwizzle: 0
+--- !u!114 &1221526377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1221526371}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9a36d6f384a4184ea09acd190eb95f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!64 &1221526378
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1221526371}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 0}

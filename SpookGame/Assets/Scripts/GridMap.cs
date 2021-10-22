@@ -6,24 +6,27 @@ using UnityEngine.Rendering;
 [RequireComponent(typeof(Grid))]
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
+[RequireComponent(typeof(MeshCollider))]
 public class GridMap : MonoBehaviour
 {
     public int rows = 32;
     public int columns = 32;
 
-    private GameObject[] prefabs;
+    public GameObject[] prefabs;
 
     private MeshFilter meshFilter;
     private MeshRenderer meshRenderer;
+    private MeshCollider meshCollider;
     private Grid grid;
     
     //Grid of indicies into the prefabs array. -1 for empty tile.
     private int[,] cels;
 
-    void Start()
+    void Awake()
     {
         meshFilter = GetComponent<MeshFilter>();
         meshRenderer = GetComponent<MeshRenderer>();
+        meshCollider = GetComponent<MeshCollider>();
         grid = GetComponent<Grid>();
 
         prefabs = Resources.LoadAll<GameObject>("Map Components");
@@ -34,23 +37,36 @@ public class GridMap : MonoBehaviour
         {
             for (int x = 0; x < columns; ++x)
             {
-                cels[x, y] = Random.Range(-1, prefabs.Length);
-                // cels[x, y] = 0;
+                // cels[x, y] = Random.Range(-1, prefabs.Length);
+                cels[x, y] = -1;
             }
         }
 
-        GenerateGeometry();
+        // GenerateGeometry();
+    }
+
+    public void SetCel(int x, int y, int cel) 
+    {
+        cels[x, y] = cel;
+    }
+
+    public void SetCel(int x, int y, string prefabName)
+    {
+        for(int i = 0; i < prefabs.Length; ++i)
+        {
+            if (prefabs[i].name.Equals(prefabName))
+            {
+                cels[x, y] = i;
+                return;
+            }
+        }
+        cels[x, y] = -1;
     }
     
     //Creates a visible mesh based off of the tiles
     public void GenerateGeometry() 
     {
         Mesh mesh = new Mesh();
-
-        // var vertices = new List<Vector3>();
-        // var normals = new List<Vector3>();
-        // var uvs = new List<Vector2>(); //Texture coordinates
-        // var triangles = new List<int>();
 
         //Merge prefabs into the mesh for each non-empty tile
         var combines = new List<CombineInstance>();
@@ -70,13 +86,10 @@ public class GridMap : MonoBehaviour
             }
         }
         mesh.CombineMeshes(combines.ToArray(), true, true, false);
-
-        // mesh.SetVertices(vertices);
-        // mesh.SetNormals(normals);
-        // mesh.SetUVs(0, uvs);
-        // mesh.SetTriangles(triangles, 0);
-        //TODO: Support for multiple submeshes
+        
+        //TODO: Support for multiple submeshes?
 
         meshFilter.mesh = mesh;
+        meshCollider.sharedMesh = mesh;
     }
 }
