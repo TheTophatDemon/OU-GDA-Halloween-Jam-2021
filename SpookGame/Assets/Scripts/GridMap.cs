@@ -66,10 +66,9 @@ public class GridMap : MonoBehaviour
     //Creates a visible mesh based off of the tiles
     public void GenerateGeometry() 
     {
-        Mesh mesh = new Mesh();
+        var bigMesh = new Mesh();
+        var subMeshData = new List<(Mesh, List<CombineInstance>)>();
 
-        //Merge prefabs into the mesh for each non-empty tile
-        var combines = new List<CombineInstance>();
         for (var y = 0; y < rows; ++y) 
         {
             for (var x = 0; x < columns; ++x)
@@ -77,19 +76,37 @@ public class GridMap : MonoBehaviour
                 if (cels[x, y] >= 0)
                 {
                     var prefab = prefabs[cels[x, y]];
-                    var combine = new CombineInstance();
-                    combine.mesh = prefab.GetComponent<MeshFilter>().sharedMesh;
                     prefab.transform.position = grid.CellToWorld(new Vector3Int(x, 0, y));
-                    combine.transform = prefab.transform.localToWorldMatrix;
-                    combines.Add(combine);
+                    var mesh = prefab.GetComponent<MeshFilter>().sharedMesh;
+                    for (int i = 0; i < mesh.subMeshCount; ++i)
+                    {
+                        if (i >= subMeshData.Count)
+                        {
+                            subMeshData.Add((new Mesh(), new List<CombineInstance>()));
+                        }
+
+                        var combine = new CombineInstance();
+                        combine.mesh = mesh;
+                        combine.transform = prefab.transform.localToWorldMatrix;
+                        combine.subMeshIndex = i;
+                        subMeshData[i].Item2.Add(combine);
+                    }
                 }
             }
         }
-        mesh.CombineMeshes(combines.ToArray(), true, true, false);
         
-        //TODO: Support for multiple submeshes?
+        var subCombines = new List<CombineInstance>();
+        foreach ((Mesh m, List<CombineInstance> ci) in subMeshData)
+        {
+            m.CombineMeshes(ci.ToArray(), true, true, false);
 
-        meshFilter.mesh = mesh;
-        meshCollider.sharedMesh = mesh;
+            var combine = new CombineInstance();
+            combine.mesh = m;
+            subCombines.Add(combine);
+        }
+        bigMesh.CombineMeshes(subCombines.ToArray(), false, false, false);
+
+        meshFilter.mesh = bigMesh;
+        meshCollider.sharedMesh = bigMesh;
     }
 }

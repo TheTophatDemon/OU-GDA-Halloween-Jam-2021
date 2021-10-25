@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(GridMap))]
+[RequireComponent(typeof(Grid))]
 public class MazeGenerator : MonoBehaviour
 {
     private static readonly Dictionary<CelState, string> PREFAB_MAP = new Dictionary<CelState, string>() 
@@ -35,13 +36,17 @@ public class MazeGenerator : MonoBehaviour
         OpenWest = 0b1000
     }
 
+    public GameObject playerPrefab;
+
     private GridMap gridMap;
+    private Grid grid;
 
     private CelState[,] visitMap;
 
     void Start()
     {
         gridMap = GetComponent<GridMap>();
+        grid = GetComponent<Grid>();
 
         visitMap = new CelState[gridMap.columns, gridMap.rows];
 
@@ -102,15 +107,27 @@ public class MazeGenerator : MonoBehaviour
 
         }
 
+        var spawnPoints = new List<Vector3Int>();
+
         //Now take the generated cel states and turn them into prefabs for map components with matching entrances
         for (int y = 0; y < gridMap.rows; ++y)
         {
             for (int x = 0; x < gridMap.columns; ++x)
             {
                 gridMap.SetCel(x, y, PREFAB_MAP[visitMap[x, y]]);
+                
+                //Also keep track of dead ends so we can place objects
+                if (PREFAB_MAP[visitMap[x, y]].Contains("U Piece"))
+                {
+                    spawnPoints.Add(new Vector3Int(x, 0, y));
+                }
             }
         }
 
         gridMap.GenerateGeometry();
+
+        //Spawn the player at a random dead end.
+        int idx = Random.Range(0, spawnPoints.Count);
+        Instantiate(playerPrefab, grid.CellToWorld(spawnPoints[idx]), Quaternion.identity);
     }
 }
