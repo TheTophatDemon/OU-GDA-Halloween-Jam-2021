@@ -37,6 +37,7 @@ public class MazeGenerator : MonoBehaviour
     }
 
     public GameObject playerPrefab;
+    public GameObject monsterPrefab;
 
     private GridMap gridMap;
     private Grid grid;
@@ -127,7 +128,14 @@ public class MazeGenerator : MonoBehaviour
         gridMap.GenerateGeometry();
 
         //Spawn the player at a random dead end.
-        int idx = Random.Range(0, spawnPoints.Count);
-        Instantiate(playerPrefab, grid.CellToWorld(spawnPoints[idx]), Quaternion.identity);
+        int playerIdx = Random.Range(0, spawnPoints.Count);
+        Instantiate(playerPrefab, grid.CellToWorld(spawnPoints[playerIdx]), Quaternion.identity);
+
+        //TODO: Make rotation face the right way
+
+        //Spawn the monster at another dead end.
+        int monsterIdx = Random.Range(0, spawnPoints.Count - 1);
+        if (monsterIdx >= playerIdx) ++monsterIdx; //Make sure the monster isn't in the same one as the player
+        Instantiate(monsterPrefab, grid.CellToWorld(spawnPoints[monsterIdx]), Quaternion.identity);
     }
 }
