@@ -6,7 +6,7 @@ using UnityEngine;
 [RequireComponent(typeof(Grid))]
 public class MazeGenerator : MonoBehaviour
 {
-    private static readonly Dictionary<CelState, string> PREFAB_MAP = new Dictionary<CelState, string>() 
+    public static readonly Dictionary<CelState, string> PREFAB_MAP = new Dictionary<CelState, string>() 
     {
         {CelState.Unvisited, "Block"},
         {CelState.OpenNorth, "U Piece N"},
@@ -27,7 +27,7 @@ public class MazeGenerator : MonoBehaviour
     };
 
     [System.Flags]
-    private enum CelState
+    public enum CelState
     {
         Unvisited = 0,
         OpenNorth = 0b0001,
@@ -38,17 +38,18 @@ public class MazeGenerator : MonoBehaviour
 
     public GameObject playerPrefab;
     public GameObject monsterPrefab;
+    public GameObject keyPrefab;
 
     private GridMap gridMap;
     private Grid grid;
 
     private CelState[,] visitMap;
 
-    void Start()
+    void Awake()
     {
         gridMap = GetComponent<GridMap>();
         grid = GetComponent<Grid>();
-
+        
         visitMap = new CelState[gridMap.columns, gridMap.rows];
 
         //Keeps track of exploration history. Most recently visited point is on top.
@@ -137,5 +138,22 @@ public class MazeGenerator : MonoBehaviour
         int monsterIdx = Random.Range(0, spawnPoints.Count - 1);
         if (monsterIdx >= playerIdx) ++monsterIdx; //Make sure the monster isn't in the same one as the player
         Instantiate(monsterPrefab, grid.CellToWorld(spawnPoints[monsterIdx]), Quaternion.identity);
+
+        //Spawn keys at remaining dead ends.
+        for (int i = 0; i < spawnPoints.Count; ++i)
+        {
+            if (i == monsterIdx || i == playerIdx) continue;
+            Instantiate(keyPrefab, grid.CellToWorld(spawnPoints[i]), Quaternion.identity);
+        }
+    }
+
+    public static CelState CelStateFromMapComponent(MapComponent comp)
+    {
+        var state = CelState.Unvisited;
+        if (comp.openNorth) state |= CelState.OpenNorth;
+        if (comp.openSouth) state |= CelState.OpenSouth;
+        if (comp.openEast) state |= CelState.OpenEast;
+        if (comp.openWest) state |= CelState.OpenWest;
+        return state;
     }
 }
