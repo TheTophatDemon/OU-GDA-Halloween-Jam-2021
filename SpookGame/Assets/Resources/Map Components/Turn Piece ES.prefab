@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 1715242916505686429}
   - component: {fileID: 3470361138921956695}
   - component: {fileID: 579965444747481051}
-  - component: {fileID: 7946175426223985604}
   m_Layer: 0
   m_Name: Turn Piece ES
   m_TagString: Untagged
@@ -28,7 +27,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3110245035768857730}
   m_LocalRotation: {x: 0.5, y: 0.5, z: -0.5, w: 0.5}
-  m_LocalPosition: {x: 0, y: 0, z: 44}
+  m_LocalPosition: {x: 16, y: 0, z: 44}
   m_LocalScale: {x: 200, y: 200, z: 200}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -63,7 +62,9 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -876546973899608171, guid: 2ceae76a174fa2947940cef9b2ccf03d, type: 3}
+  - {fileID: 2100000, guid: b32e44de77b755693a68ea8f4a986855, type: 2}
+  - {fileID: 2100000, guid: b64583833fcb6e542bf96e708bf207e9, type: 2}
+  - {fileID: 2100000, guid: f08e8332acc16ed408b2073cacb4c02d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -99,19 +100,3 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 1193785338090556159, guid: 2ceae76a174fa2947940cef9b2ccf03d, type: 3}
---- !u!114 &7946175426223985604
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3110245035768857730}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1ad2792bb467cf4478fa779a98679af7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  openNorth: 0
-  openSouth: 1
-  openWest: 0
-  openEast: 1

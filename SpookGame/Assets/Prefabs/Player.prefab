@@ -167,9 +167,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fa8810eea55167b986ad8eb3c6298b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dustParticlePrefab: {fileID: 9088638475632770761, guid: 8245385826b88b96192e49cac1998218, type: 3}
   drilling: 0
   drillingProgress: 0
-  drillingSpeed: 0.5
+  drillingSpeed: 0.3
 --- !u!82 &28892997790307149
 AudioSource:
   m_ObjectHideFlags: 0

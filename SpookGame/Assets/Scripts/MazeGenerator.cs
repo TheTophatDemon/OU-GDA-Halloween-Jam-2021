@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary> Generates a maze, sets the GridMap to match the maze, and spawns game objects. </summary>
 [RequireComponent(typeof(GridMap))]
 [RequireComponent(typeof(Grid))]
 public class MazeGenerator : MonoBehaviour
@@ -13,6 +14,7 @@ public class MazeGenerator : MonoBehaviour
     private GridMap gridMap;
     private Grid grid;
 
+    ///<summary> Tracks which cels have been visited by the algorithm and from where. </summary>
     private GridMap.Openings[,] visitMap;
 
     void Start()
@@ -33,6 +35,7 @@ public class MazeGenerator : MonoBehaviour
             Vector2Int from = navStack.Peek();
 
             dirChoices.Clear();
+            // Explore a neighbor if it hasn't been visited yet.
             if (from.x > 0 && visitMap[from.x - 1, from.y] == GridMap.Openings.Closed) dirChoices.Add(Vector2Int.left);
             if (from.x < gridMap.Columns - 1 && visitMap[from.x + 1, from.y] == GridMap.Openings.Closed) dirChoices.Add(Vector2Int.right);
             if (from.y > 0 && visitMap[from.x, from.y - 1] == GridMap.Openings.Closed) dirChoices.Add(Vector2Int.down);
@@ -40,6 +43,7 @@ public class MazeGenerator : MonoBehaviour
 
             if (dirChoices.Count > 0)
             {
+                // Pick a random unexplored neighbor and open it in the direction of the current cel.
                 int i = Random.Range(0, dirChoices.Count);
                 Vector2Int to = from + dirChoices[i];
 
@@ -98,18 +102,37 @@ public class MazeGenerator : MonoBehaviour
 
         gridMap.GenerateGeometry();
 
-        //Spawn the player at a random dead end.
+        // Spawn the player at a random dead end.
         int playerIdx = Random.Range(0, spawnPoints.Count);
-        Instantiate(playerPrefab, grid.CellToWorld(spawnPoints[playerIdx]), Quaternion.identity);
 
-        //TODO: Make rotation face the right way
+        // Choose an angle that faces one of the cel's entrances
+        float playerAngle = 0.0f;
+        int celX = spawnPoints[playerIdx].x;
+        int celY = spawnPoints[playerIdx].z;
+        GridMap.Openings op = visitMap[celX, celY];
+        if (gridMap.IsCelOpen(celX, celY, GridMap.Openings.East))
+        {
+            playerAngle = 90.0f;
+        }
+        else if (gridMap.IsCelOpen(celX, celY, GridMap.Openings.South))
+        {
+            playerAngle = 180.0f;
+        }
+        else if (gridMap.IsCelOpen(celX, celY, GridMap.Openings.West))
+        {
+            playerAngle = 270.0f;
+        }
 
-        //Spawn the monster at another dead end.
+        GameObject playerObject = Instantiate(playerPrefab, grid.CellToWorld(spawnPoints[playerIdx]), Quaternion.identity);
+        // Turn the player's camera to face the desired direction.
+        playerObject.GetComponent<PlayerMovement>().Yaw = playerAngle;
+
+        // Spawn the monster at another dead end.
         int monsterIdx = Random.Range(0, spawnPoints.Count - 1);
         if (monsterIdx >= playerIdx) ++monsterIdx; //Make sure the monster isn't in the same one as the player
         Instantiate(monsterPrefab, grid.CellToWorld(spawnPoints[monsterIdx]), Quaternion.identity);
 
-        //Spawn keys at remaining dead ends.
+        // Spawn keys at remaining dead ends.
         for (int i = 0; i < spawnPoints.Count; ++i)
         {
             if (i == monsterIdx || i == playerIdx) continue;

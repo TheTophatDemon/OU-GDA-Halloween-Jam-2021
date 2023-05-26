@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 476125001440166700}
   - component: {fileID: 2413786890598021094}
   - component: {fileID: 1826840824449162602}
-  - component: {fileID: 3801950892074244057}
   m_Layer: 0
   m_Name: Hall Piece EW
   m_TagString: Untagged
@@ -63,7 +62,9 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -876546973899608171, guid: 63438d95a0561474795f10b35d3923a1, type: 3}
+  - {fileID: 2100000, guid: b64583833fcb6e542bf96e708bf207e9, type: 2}
+  - {fileID: 2100000, guid: b32e44de77b755693a68ea8f4a986855, type: 2}
+  - {fileID: 2100000, guid: f08e8332acc16ed408b2073cacb4c02d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -99,19 +100,3 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -3847373292043380631, guid: 63438d95a0561474795f10b35d3923a1, type: 3}
---- !u!114 &3801950892074244057
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4215230795821438515}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1ad2792bb467cf4478fa779a98679af7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  openNorth: 0
-  openSouth: 0
-  openWest: 1
-  openEast: 1

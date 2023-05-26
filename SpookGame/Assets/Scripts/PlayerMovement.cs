@@ -16,11 +16,13 @@ public class PlayerMovement : MonoBehaviour
     // This code keeps track of the camera's yaw manually because localRotation isn't always consistent.
     private float cameraYaw;
 
+    public float Yaw { get => cameraYaw; set => cameraYaw = value; }
+
     void Start()
     {
         controller = GetComponent<CharacterController>();
         cameraObject = transform.Find("Camera").gameObject;
-        cameraYaw = cameraObject.transform.localRotation.eulerAngles.y;
+        //cameraYaw = cameraObject.transform.localRotation.eulerAngles.y;
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;

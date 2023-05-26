@@ -58,8 +58,9 @@ public class Pathfinder : MonoBehaviour
     /// <summary> Returns a list of target positions for the optimal path between the vectors <c>start</c> and <c>end</c>. </summary>
     public List<Vector3> GetPath(Vector3 start, Vector3 end) 
     {
-        if (gridMap == null) return new List<Vector3>();
+        if (gridMap == null) return new List<Vector3>(); // The map isn't loaded yet, there can be no path.
 
+        // Get start and end positions in terms of cels in the grid
         Vector3Int celStart = grid.WorldToCell(start + (grid.cellSize / 2.0f));
         celStart.y = 0;
         Vector3Int celEnd = grid.WorldToCell(end + (grid.cellSize / 2.0f));
@@ -78,11 +79,16 @@ public class Pathfinder : MonoBehaviour
                 pathNodes[x, y].inClosed = false;
             }
         }
+        
+        // Begin A* search
+        
         var path = new List<Vector3>();
-
-        var open = new SortedList<PathNode, PathNode>(); //Apparently C# doesn't have a priority queue yet...
+        
+        // This acts as a priority queue, since this version of .NET does not have Priority Queues in the standard library.
+        var open = new SortedList<PathNode, PathNode>();
         var closed = new List<PathNode>();
 
+        // Disregard paths starting from outside the map
         if (celStart.x < 0 || celStart.x >= gridMap.Columns || celEnd.x < 0 || celEnd.x >= gridMap.Columns
             || celStart.z < 0 || celStart.z >= gridMap.Rows || celEnd.z < 0 || celEnd.z >= gridMap.Rows)
         {
@@ -98,6 +104,7 @@ public class Pathfinder : MonoBehaviour
         PathNode node = null;
         while (open.Count > 0)
         {
+            // Look through a node on the frontier that has the lowest overall cost
             node = open.Keys[0];
             open.RemoveAt(0);
             node.inOpen = false;
@@ -120,8 +127,6 @@ public class Pathfinder : MonoBehaviour
                 {
                     var newPos = node.pos + dir;
 
-                    //Debug.DrawLine(grid.CellToWorld(node.pos), grid.CellToWorld(newPos), Color.magenta, 0.1f);
-
                     var newNode = pathNodes[newPos.x, newPos.z];
                     var distFromStart = node.distFromStart + 1.0f;
                     var distFromGoal = (celEnd - newPos).magnitude;
@@ -129,6 +134,7 @@ public class Pathfinder : MonoBehaviour
                     
                     if (!newNode.inClosed || distFromStart < newNode.distFromStart)
                     {
+                        // Overwrite the neighboring node if the path through our current node is shorter
                         newNode.distFromStart = distFromStart;
                         newNode.combinedDist = combinedDist;
                         newNode.parent = node;
@@ -157,15 +163,12 @@ public class Pathfinder : MonoBehaviour
             
             if (it.parent != null) 
             {
+                // Draw the path in the editor view
                 Debug.DrawLine(grid.CellToWorld(it.pos), grid.CellToWorld(it.parent.pos), Color.magenta, 0.1f);
-                //Debug.Log("Drawing line from " + it.pos.ToString() + " to " + it.parent.pos.ToString());
             }
             
             it = it.parent;
         }
-
-        //Debug.DrawLine(start, start + Vector3.up * 10.0f, Color.magenta, 10.0f);
-       // Debug.DrawLine(end, end + Vector3.up * 10.0f, Color.magenta, 10.0f);
 
         return path;
     }

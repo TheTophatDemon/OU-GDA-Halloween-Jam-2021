@@ -3,20 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+///<summary> Controls the element on the HUD that counts the keys. </summary>
 public class KeyCounter : MonoBehaviour
 {
+    private GameManager gameManager;
     private Text text;
-    public int numKeys = 0;
 
     void Start()
     {
         text = GetComponent<Text>();
+        gameManager = FindFirstObjectByType<GameManager>();
     }
 
     void Update()
     {
-        var keys = GameObject.FindGameObjectsWithTag("Key");
-        numKeys = keys.Length;
-        text.text = "Keys Left: " + keys.Length;
+        text.text = "Keys Left: " + gameManager.KeyCount;
     }
 }

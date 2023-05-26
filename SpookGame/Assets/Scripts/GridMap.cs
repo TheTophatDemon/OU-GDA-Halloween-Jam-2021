@@ -210,43 +210,39 @@ public class GridMap : MonoBehaviour
         // to prevent the mysterious CombineMeshes function from throwing away
         // the material index information.  
 
-        // This list has CombineInstances to merge for each submesh of the final mesh.
-        var subMeshData = new List<List<CombineInstance>>();
+        // This dictionary collects submeshes to be combined, grouped by their material.
+        var subMeshData = new Dictionary<Material, List<CombineInstance>>();
 
         for (var y = 0; y < Rows; ++y) 
         {
             for (var x = 0; x < Columns; ++x)
             {
-                if (cels[x, y].openings != Openings.Closed)
+                GameObject prefab = prefabMap[cels[x, y].openings];
+                
+                // Calculate the map piece's world position
+                prefab.transform.position = grid.CellToWorld(new Vector3Int(x, 0, y));
+                
+                // Add the prefab's submeshes to their respective CombineInstance lists.
+                var mesh = prefab.GetComponent<MeshFilter>().sharedMesh;
+                var meshRender = prefab.GetComponent<MeshRenderer>();
+                for (int i = 0; i < mesh.subMeshCount; ++i)
                 {
-                    // Get the correct prefab
-                    var prefab = prefabMap[cels[x, y].openings];
-                    // Calculate the map piece's world position
-                    prefab.transform.position = grid.CellToWorld(new Vector3Int(x, 0, y));
-                    
-                    // Add the prefab's submeshes to their respective CombineInstance lists.
-                    var mesh = prefab.GetComponent<MeshFilter>().sharedMesh;
-                    for (int i = 0; i < mesh.subMeshCount; ++i)
+                    var combine = new CombineInstance();
+                    combine.mesh = mesh;
+                    combine.transform = prefab.transform.localToWorldMatrix;
+                    combine.subMeshIndex = i;
+                    if (!subMeshData.ContainsKey(meshRender.sharedMaterials[i])) 
                     {
-                        if (i >= subMeshData.Count)
-                        {
-                            // In this way, the final mesh will have as many submeshes as the prefab with the maximum number of submeshes.
-                            subMeshData.Add(new List<CombineInstance>());
-                        }
-
-                        var combine = new CombineInstance();
-                        combine.mesh = mesh;
-                        combine.transform = prefab.transform.localToWorldMatrix;
-                        combine.subMeshIndex = i;
-                        subMeshData[i].Add(combine);
+                        subMeshData[meshRender.sharedMaterials[i]] = new List<CombineInstance>();
                     }
+                    subMeshData[meshRender.sharedMaterials[i]].Add(combine);
                 }
             }
         }
         
         // Now combine the aggregate meshes for each submesh index.
         var subCombines = new List<CombineInstance>();
-        foreach (List<CombineInstance> ci in subMeshData)
+        foreach ((Material mat, List<CombineInstance> ci) in subMeshData)
         {
             // Combine each list of CombineInstances into a single mesh.
             var m = new Mesh();

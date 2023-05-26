@@ -1,9 +1,13 @@
 using UnityEngine;
 
-// Controls how the player is able to drill through walls.
+/// <summary> Controls how the player is able to drill through walls. </summary>
 public class PlayerDrilling : MonoBehaviour
 {
+    public GameObject dustParticlePrefab;
+
     private GameObject cameraObject;
+
+    ///<summary> The debug sphere is used to visually confirm that the drilling will happen in the right cel. Should be invisible in final game.</summary>
     private GameObject debugSphere;
     private AudioSource drillSound;
     private AudioSource wallBreakSound;
@@ -12,9 +16,8 @@ public class PlayerDrilling : MonoBehaviour
     private Grid grid;
 
     public bool drilling = false;
-    private Vector3Int drillingCel = Vector3Int.zero;
     public float drillingProgress = 0.0f;
-    public float drillingSpeed = 0.5f;
+    public float drillingSpeed = 0.25f;
 
     void Start()
     {
@@ -92,6 +95,9 @@ public class PlayerDrilling : MonoBehaviour
                 Debug.Log($"Destroyed wall from ({fromX}, {fromY}) to ({toX}, {toY}).");
                 wallBreakSound.Play();
                 drillingProgress = 0.0f;
+                // Spawn particle effect
+                Instantiate(dustParticlePrefab, grid.CellToWorld(new Vector3Int(toX, 0, toY)), Quaternion.identity);
+                Instantiate(dustParticlePrefab, grid.CellToWorld(new Vector3Int(fromX, 0, fromY)), Quaternion.identity);
             }
 
             // Play the drilling sound whilst drilling
