@@ -31,6 +31,12 @@ public class GameManager : MonoBehaviour
         {
             fader.StartWinTransition();
         }
+
+        // Exit game when pressing escape
+        if (Input.GetButton("Cancel"))
+        {
+            Application.Quit();
+        }
     }
 
     public void WinGame()

@@ -8,6 +8,8 @@ There have been several bug fixes and enhancements made since the game was initi
 
 [itch.io page](https://x54321.itch.io/lost-dog)
 
-![screenshot](screen0.png)
+Controls: WASD for movement, Q and A or mouse for turning. Hold space or left mouse to drill through rocky walls.
+
+![screenshot](screen0.png) ![screenshot](screen1.png)
 
 No ownership is claimed on the sound effects. All other assets (textures, models, sprites, etc.) are licensed under Creative Commons Attribution (https://creativecommons.org/licenses/by/3.0/). The game code and other files are licensed under GPL3 (detailed in the LICENSE file).
