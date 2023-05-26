@@ -7,11 +7,6 @@ public class DieScreen : MonoBehaviour
 {
     private float timer = 0.0f;
 
-    void Start()
-    {
-        
-    }
-
     void Update()
     {
         timer += Time.deltaTime;

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MapComponent : MonoBehaviour
+public class MapPiece : MonoBehaviour
 {
     public bool openNorth = false;
     public bool openSouth = false;

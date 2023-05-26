@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+/// <summary> This controls how the screen fades into different colors. It also triggers the win transition (which probably doesn't belong here...) </summary>
 public class Fader : MonoBehaviour
 {
     public KeyCounter keyCounter;

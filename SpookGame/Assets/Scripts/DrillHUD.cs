@@ -2,11 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary> Controls the drill image shown on the HUD. </summary>
 public class DrillHUD : MonoBehaviour
 {
     private Animator animator;
     private GameObject playerObj;
-    private PlayerMovement playerMover;
+    private PlayerDrilling playerDrilling;
 
     void Start()
     {
@@ -17,11 +18,11 @@ public class DrillHUD : MonoBehaviour
         if (playerObj == null)
         {
             playerObj = GameObject.FindGameObjectWithTag("Player");
-            playerMover = playerObj.GetComponent<PlayerMovement>();
+            playerDrilling = playerObj.GetComponent<PlayerDrilling>();
         }
         else
         {
-            animator.SetBool("drilling", playerMover.drilling);
+            animator.SetBool("drilling", playerDrilling.drilling);
         }
     }
 }

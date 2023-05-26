@@ -10,7 +10,7 @@ public class Monster : MonoBehaviour
     private Vector3 velocity = Vector3.zero;
 
     private CharacterController controller;
-    private GridMap map;
+    private Pathfinder mapPathfinder;
 
     private Vector3 walkTo;
 
@@ -38,10 +38,10 @@ public class Monster : MonoBehaviour
     void Update()
     {
         //Workaround for weird-ass deployment bug
-        if (map == null)
+        if (mapPathfinder == null)
         {
             var mapObject = GameObject.FindWithTag("Map");
-            map = mapObject.GetComponent<GridMap>();
+            mapPathfinder = mapObject.GetComponent<Pathfinder>();
         }
 
         var playerObject = GameObject.FindWithTag("Player");
@@ -59,7 +59,7 @@ public class Monster : MonoBehaviour
         {
             if (walkDist < walkSpeed * Time.deltaTime) 
             {
-                var path = map.GetPath(transform.position, playerObject.transform.position);
+                var path = mapPathfinder.GetPath(transform.position, playerObject.transform.position);
                 if (path.Count > 0) walkTo = path[0];
             }
 
