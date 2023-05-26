@@ -2,6 +2,7 @@
 Vector art by Jerrod Burns, everything else by Xander.
 
 The "Spook Game" folder contains the unity project for the game.
+It consists of a randomly generated cavern maze that the player must go through finding keys, drilling through walls if necessary. However, something large and vicious lurks in the darkness.
 
 The original game code was made in the span of 3 (very busy college student) weeks. 
 There have been several bug fixes and enhancements made since the game was initially released.
